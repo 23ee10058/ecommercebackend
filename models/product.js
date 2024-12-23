@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema({
   img: String,
   category: String,
   rating: Number,
-  productId: { type: String, unique: true }, // Added productId field
+  productId:{type:Number , unique:true},
   inStockValue: Number, // Available stock value
   soldStockValue: Number, // Number of items sold
   visibility: { type: String, default: 'on' } // Visibility field with default 'on'

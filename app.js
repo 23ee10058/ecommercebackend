@@ -18,11 +18,12 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: [' http://localhost:5173', 'http://localhost:3000','https://merabestie-orpin.vercel.app','https://merabestie-khaki.vercel.app','https://merabestie.com','https://hosteecommerce.vercel.app'], // Frontend URLs
+  origin: ['http://localhost:5174','http://localhost:5173','https://merabestie-orpin.vercel.app','https://merabestie-khaki.vercel.app','https://merabestie.com','https://hosteecommerce.vercel.app'], // Frontend URLs
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+app.options('*', cors()); 
 
 app.use(express.json());
 app.use(require('cookie-parser')());
@@ -53,7 +54,7 @@ app.use('/complaints', complaintsRoutes);
 app.use('/coupon',couponRoutes)
 
 // MongoDB Connection
-const uri = "mongodb+srv://ecommerce:ecommerce@ecommerce.dunf0.mongodb.net/";
+const uri = "mongodb://localhost:27017/local";
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -74,23 +75,33 @@ app.get('/keep-alive', (req, res) => {
 app.post('/product/category', async (req, res) => {
   try {
     const { category } = req.body;
-    
+    console.log(req)
+    console.log(category)
     // Normalize the category to handle case variations
     let normalizedCategory = category.toLowerCase();
     let searchCategory;
-
+    
     // Map normalized categories to their proper display versions
     switch(normalizedCategory) {
-      case 'gift-boxes':
-      case 'gift boxes':
-        searchCategory = 'Gift Boxes';
+      
+      case 'kurta':
+        searchCategory = 'kurta';
         break;
-      case 'books':
-        searchCategory = 'Books';
+      case 'sarees':
+        searchCategory = 'sarees';
          break;
-      case 'stationery':
-        searchCategory = 'Stationery';
+      case 'suit':
+        searchCategory = 'suit';
         break;
+      case 'lehenga':
+          searchCategory = 'lehenga';
+          break;
+      case 'dresses':
+            searchCategory = 'dresses';
+            break;
+      case 'co-ord':
+              searchCategory = 'co-ord';
+              break;
       default:
         searchCategory = category;
     }
@@ -137,8 +148,8 @@ app.post('/create-product', async (req, res) => {
 app.get('/get-product', async (req, res) => {
   try {
     const products = await Product.find();
+    console.log(products)
     res.status(200).json({
-      success: true,
       products
     });
   } catch (error) {
@@ -297,7 +308,7 @@ app.get('/assign-productid', async (req, res) => {
       let productId;
       // Generate unique 6 digit number
       do {
-        productId = Math.floor(100000 + Math.random() * 900000).toString();
+        productId = Math.floor(1000000+Math.random()*900000).toString();
       } while (usedIds.has(productId));
       
       usedIds.add(productId);
